@@ -34,7 +34,7 @@ import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-public abstract class BaseFetchLoadAdapter<T, K extends BaseViewHolder> extends RecyclerView.Adapter<K> implements IRecyclerView {
+public abstract class BaseFetchLoadAdapter<T, K extends BaseViewHolder> extends BaseAdapter<K> {
 
     private static final String TAG = BaseFetchLoadAdapter.class.getSimpleName();
 
@@ -701,7 +701,7 @@ public abstract class BaseFetchLoadAdapter<T, K extends BaseViewHolder> extends 
      * @return new ViewHolder
      */
     protected K createBaseViewHolder(View view) {
-        return (K) new BaseViewHolder(view);
+        return (K) new BaseViewHolder(view, this);
     }
 
     protected int getDefItemViewType(int position) {

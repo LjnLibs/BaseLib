@@ -52,7 +52,7 @@ import java.util.List;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends RecyclerView.Adapter<K> implements IRecyclerView {
+public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends BaseAdapter<K> {
 
     private boolean isScrolling = false;
 
@@ -683,7 +683,7 @@ public abstract class BaseQuickAdapter<T, K extends BaseViewHolder> extends Recy
      * @return new ViewHolder
      */
     protected K createBaseViewHolder(View view) {
-        return (K) new BaseViewHolder(view);
+        return (K) new BaseViewHolder(view, this);
     }
 
     /**

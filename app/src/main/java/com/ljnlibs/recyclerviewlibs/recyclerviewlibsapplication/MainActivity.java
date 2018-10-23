@@ -4,6 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Toast;
 
 import com.ljnlibs.recyclerviewlibs.recyclerviewlibsapplication.mulitFetchTest.TestHolder0;
 import com.ljnlibs.recyclerviewlibs.recyclerviewlibsapplication.mulitFetchTest.TestHolder1;
@@ -12,11 +15,13 @@ import com.ljnlibs.recyclerviewlibs.rlviewlibrary.manager.BaseAdapterManager;
 import com.ljnlibs.recyclerviewlibs.rlviewlibrary.manager.bean.BaseData;
 import com.ljnlibs.recyclerviewlibs.rlviewlibrary.manager.bean.MulitItemBean;
 import com.ljnlibs.recyclerviewlibs.rlviewlibrary.manager.myAdapter.MyMultiItemFetchLoadAdapter;
+import com.ljnlibs.recyclerviewlibs.rlviewlibrary.recyclerview.adapter.BaseAdapter;
+import com.ljnlibs.recyclerviewlibs.rlviewlibrary.recyclerview.callback.OnItemChildClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnItemChildClickListener {
 
     private RecyclerView base_rl_view;
 
@@ -36,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
         initData();
 
         MyMultiItemFetchLoadAdapter adapter = BaseAdapterManager.getInstance().creatMultiFetchAdapter(base_rl_view,dataList,holderList);
-
+        //所有注册了点击事件的处理（点击事件在TestHolder中注册）
+        adapter.setOnItemChildClickListener(this);
         base_rl_view.setAdapter(adapter);
 
     }
@@ -65,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
            }
 
         }
+    }
+
+    @Override
+    public boolean onItemChildClick(BaseAdapter adapter, View view, int position) {
+        String itemkey = dataList.get(position).getItemKey();
+        Toast.makeText(this, itemkey, Toast.LENGTH_SHORT).show();
+        System.out.println("onItemChildClick   : "+itemkey);
+        return true;
     }
 
     public class TestData extends BaseData{

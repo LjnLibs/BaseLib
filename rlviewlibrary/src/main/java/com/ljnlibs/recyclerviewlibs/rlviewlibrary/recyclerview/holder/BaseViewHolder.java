@@ -37,6 +37,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.ljnlibs.recyclerviewlibs.rlviewlibrary.recyclerview.adapter.BaseAdapter;
+
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 
@@ -50,6 +52,7 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
     private final LinkedHashSet<Integer> childClickViewIds;
     private final LinkedHashSet<Integer> itemChildLongClickViewIds;
 
+    private final LinkedHashSet<Integer> itemChildCheckedChangeViewIds;
 
     public View convertView;
 
@@ -58,12 +61,16 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      */
     Object associatedObject;
 
+    private BaseAdapter mBaseAdapter;
 
-    public BaseViewHolder(View view) {
+
+    public BaseViewHolder(View view, BaseAdapter mBaseAdapter) {
         super(view);
         this.views = new SparseArray<View>();
+        this.mBaseAdapter = mBaseAdapter;
         this.childClickViewIds = new LinkedHashSet<>();
         this.itemChildLongClickViewIds = new LinkedHashSet<>();
+        this.itemChildCheckedChangeViewIds = new LinkedHashSet<>();
         convertView = view;
 
     }
@@ -327,6 +334,21 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      */
     public BaseViewHolder addOnClickListener(int viewId) {
         childClickViewIds.add(viewId);
+        final View view = getView(viewId);
+        if (view != null) {
+            if (!view.isLongClickable()) {
+                view.setLongClickable(true);
+            }
+            view.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    if(mBaseAdapter != null && mBaseAdapter.getOnItemChildClickListener() != null) {
+                        mBaseAdapter.getOnItemChildClickListener().onItemChildClick(mBaseAdapter, v, getClickPosition());
+                    }
+                }
+            });
+        }
         return this;
     }
 
@@ -337,6 +359,23 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
      */
     public BaseViewHolder addOnLongClickListener(int viewId) {
         itemChildLongClickViewIds.add(viewId);
+        final View view = getView(viewId);
+        if (view != null) {
+            if (!view.isLongClickable()) {
+                view.setLongClickable(true);
+            }
+            view.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if(mBaseAdapter != null) {
+                        return mBaseAdapter.getOnItemChildLongClickListener() != null &&
+                                mBaseAdapter.getOnItemChildLongClickListener().onItemChildLongClick(mBaseAdapter, v, getClickPosition());
+                    }else{
+                        return false;
+                    }
+                }
+            });
+        }
         return this;
     }
 
@@ -417,6 +456,41 @@ public class BaseViewHolder extends RecyclerView.ViewHolder {
         CompoundButton view = getView(viewId);
         view.setOnCheckedChangeListener(listener);
         return this;
+    }
+
+    public BaseViewHolder addOnCheckedChangeListener(int viewId) {
+        itemChildCheckedChangeViewIds.add(viewId);
+        CompoundButton view = getView(viewId);
+        if (view != null) {
+            view.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(mBaseAdapter != null) {
+                        mBaseAdapter.getOnCheckedChangeListener().onCheckedChanged(buttonView, isChecked, getClickPosition());
+                    }
+                }
+            });
+        }
+
+        return this;
+    }
+
+    public BaseViewHolder removeOnCheckedChangeListener(int viewId) {
+        itemChildCheckedChangeViewIds.remove(viewId);
+        CompoundButton view = getView(viewId);
+        if (view != null) {
+            view.setOnCheckedChangeListener(null);
+        }
+
+        return this;
+    }
+
+    private int getClickPosition() {
+        if (getLayoutPosition()>=mBaseAdapter.getHeaderLayoutCount()){
+            return getLayoutPosition() - mBaseAdapter.getHeaderLayoutCount();
+        }
+        return 0;
     }
 
     /**

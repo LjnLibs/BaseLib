@@ -26,7 +26,8 @@ public class TestHolder2 extends BaseMulitItemHolder<MyMultiItemFetchLoadAdapter
         TextView content = findViewById(R.id.test_content);
         name.setText(data2.getName2());
         content.setText(data2.getContent2());
-
+        holder.addOnClickListener(R.id.test_name);
+        holder.addOnClickListener(R.id.test_content);
     }
 
     // 根据layout id查找对应的控件

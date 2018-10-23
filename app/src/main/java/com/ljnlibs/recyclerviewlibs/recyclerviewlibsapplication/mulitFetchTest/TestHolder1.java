@@ -28,6 +28,8 @@ public class TestHolder1 extends BaseMulitItemHolder<MyMultiItemFetchLoadAdapter
         name.setText(data.getName1());
         content.setText(data.getContent1());
 
+        holder.addOnClickListener(R.id.test_content);
+
     }
 
     // 根据layout id查找对应的控件

@@ -1,7 +1,7 @@
 package com.ljnlibs.recyclerviewlibs.recyclerviewlibsapplication.mulitFetchTest;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.ljnlibs.recyclerviewlibs.recyclerviewlibsapplication.MainActivity;
@@ -27,7 +27,8 @@ public class TestHolder0 extends BaseMulitItemHolder<MyMultiItemFetchLoadAdapter
         TextView content = findViewById(R.id.test_content);
         name.setText(data.getName());
         content.setText(data.getContent());
-
+        //注册点击事件
+        holder.addOnClickListener(R.id.test_name);
     }
 
     // 根据layout id查找对应的控件
